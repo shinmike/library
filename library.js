@@ -28,23 +28,27 @@ var library = {
 // prints a list of all playlists, in the form:
 // p01: Coding Music - 2 tracks
 // p02: Other Playlist - 1 tracks
-//
+
 var printPlaylists = function () {
-  // console.log(library['playlists']['p01']);
-  // var playlists = library['playlists']['p01'];
-  //   console.log(playlists);
+  // for (var blah in library){
+  //   // tracks
+  //   // playlists
+  //   if (blah === "playlists"){
+  //     console.log(library[blah]);
+  //   }
+  // }
   var musLib = Object.keys(library['playlists']);
-  // console.log(musLib(0));
   for (var playlists of musLib){
     var playlist = library['playlists'][playlists];
     var name = playlist['name'];
     var id = playlist['id'];
     var tracks = playlist['tracks'];
     var trackCount = tracks['length'];
-    console.log(id + ': ' + name + " - " + trackCount + " tracks");
+    // console.log(id + ': ' + name + " - " + trackCount + " tracks");
   }
 }
 printPlaylists();
+// ---------------------------------------------------------- DONE
 
 
 // prints a list of all tracks, in the form:
@@ -70,6 +74,7 @@ var printTracks = function () {
   }
 }
 printTracks();
+// ---------------------------------------------------------- DONE
 
 
 // prints a list of tracks for a given playlist, in the form:
@@ -79,31 +84,77 @@ printTracks();
 
 var printPlaylist = function (playlistId) {
 
-  var playlist = library['playlists'][playlistId];
-  var playlistTracks = playlist['tracks'];
-  var noOfTracks = playlistTracks.length;
-  var nameOfPlaylist = playlist['name'];
-  console.log(playlistId + ": " + nameOfPlaylist + "- " + noOfTracks + " tracks");
-  playlistTracks.forEach(printTrack);
+  var playlists = library['playlists'];
+  var output = "";
+
+  for (var i in playlists) {
+    var playlist = playlists[i];
+
+    var playlistId = playlist["id"];
+    var playlistName = playlist["name"];
+    var playlistTrackCount = playlist["tracks"].length;
+    output += playlistId + ": " + playlistName + " - " + playlistTrackCount + " tracks\n";
+
+    for (var j in playlist["tracks"]) {
+      var tracksInPlaylist = playlist["tracks"][j];
+
+      var track = library.tracks[tracksInPlaylist];
+
+      var tracksInPlaylistId = track["id"];
+      var tracksInPlaylistName = track["name"];
+      var tracksInPlaylistArtist = track["artist"];
+      var tracksInPlaylistAlbum = track["album"];
+      output += tracksInPlaylistId + ": " + tracksInPlaylistName + " by " + tracksInPlaylistArtist + " (" + tracksInPlaylistAlbum + ")\n";
+    }
+  }
+  return output;
 }
 
-function printTrack(album){
-  var track = library['tracks'][album];
-  console.log(track);
-}
+//console.log(printPlaylist());
 
-printPlayList('p01');
+
+// var printPlaylist = function (playlistId) {
+
+//   var playlist = library['playlists'][playlistId];
+//   var playlistTracks = playlist['tracks'];
+//   var noOfTracks = playlistTracks.length;
+//   var nameOfPlaylist = playlist['name'];
+//   console.log(playlistId + ": " + nameOfPlaylist + "- " + noOfTracks + " tracks");
+//   playlistTracks.forEach(printTrack);
+// }
+
+// function printTrack(album){
+//   var track = library['tracks'][album];
+//   console.log(track);
+// }
+
+// printPlayList('p01');
 // ('p01') = argument to function
 // {} = code block / object literal
 // [] = array literal
 // function(parameter)
 
+// ---------------------------------------------------------- DONE
+
+
+
 // adds an existing track to an existing playlist
 
 var addTrackToPlaylist = function (trackId, playlistId) {
 
-}
+  var playlistObj = library.playlists;
+  var playlistTracks = playlistObj.tracks;
+  var tracksObj = library.tracks;
 
+  var playlistOfInterest = playlistObj[playlistId];
+  playlistOfInterest.tracks.push(trackId);
+  //console.log(playlistOfInterest);
+
+}
+addTrackToPlaylist("t02", "p02");
+console.log(printPlaylist());
+
+// ---------------------------------------------------------- DONE
 
 // generates a unique id
 // (use this for addTrack and addPlaylist)
@@ -115,10 +166,31 @@ var uid = function() {
 
 // adds a track to the library
 
-var addTrack = function (name, artist, album) {
+function getNextId() {
+  var sortedNums = Object.keys(library.tracks).map(function(id){
 
+    return parseInt(id.replace("t", ""));
+  }).sort()
+
+  return "t0" + (sortedNums[sortedNums.length - 1] + 1);
+};
+
+var addTrack = function (name, artist, album) {
+  var playlistObj = library.playlists;
+  var tracksObj = library.tracks;
+  var id = getNextId();
+
+  tracksObj[id] = {
+    id: id,
+    name: name,
+    artist: artist,
+    album: album
+  };
+
+return tracksObj;
 }
 
+// ---------------------------------------------------------- DONE
 
 // adds a playlist to the library
 
